@@ -24,6 +24,7 @@ jobs:
         nix develop \
           --command bash -e -c '
             ./packages/rpm.sh packages-out $PWD/packages/rpm/SPECS/ton.spec $PWD/result'
+    - run: dpkg -i packages-out/deb/*
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:

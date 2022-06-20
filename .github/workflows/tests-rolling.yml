@@ -1,0 +1,21 @@
+name: "Unit tests, rolling dependencies"
+on:
+  pull_request:
+  push:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    - uses: cachix/install-nix-action@v17
+    - uses: cachix/cachix-action@v10
+      with:
+        name: ton
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: |
+        nix develop \
+          --override-input nixpkgs https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz \
+          --command bash -e -c '
+            ctest --build-and-test . build --build-generator Ninja --build-options $cmakeFlags  --test-command ctest'

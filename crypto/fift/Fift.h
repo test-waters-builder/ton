@@ -27,6 +27,8 @@
 namespace fift {
 struct IntCtx;
 
+const std::string fift_version{"0.2.0"};
+
 struct Fift {
  public:
   struct Config {

@@ -120,6 +120,7 @@ int main(int argc, char* const argv[]) {
         new_verbosity_level = VERBOSITY_NAME(FATAL) + td::to_integer<int>(td::Slice(optarg));
         break;
       case 'V':
+        std::cout << "Fift semantic version: v" << fift::fift_version << "\n";
         std::cout << "Fift build information: [ Commit: " << GitMetadata::CommitSHA1() << ", Date: " << GitMetadata::CommitDate() << "]\n";
         std::exit(0);
         break;

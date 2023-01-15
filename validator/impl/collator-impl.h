@@ -73,6 +73,7 @@ class Collator final : public td::actor::Actor {
   Ref<ValidatorSet> validator_set_;
   td::actor::ActorId<ValidatorManager> manager;
   td::Timestamp timeout;
+  td::Timestamp soft_timeout_, medium_timeout_;
   td::Promise<BlockCandidate> main_promise;
   ton::BlockSeqno last_block_seqno{0};
   ton::BlockSeqno prev_mc_block_seqno{0};
@@ -113,7 +114,7 @@ class Collator final : public td::actor::Actor {
                                               block::ActionPhaseConfig* action_phase_cfg,
                                               td::RefInt256* masterchain_create_fee,
                                               td::RefInt256* basechain_create_fee,
-                                              WorkchainId wc);
+                                              WorkchainId wc, UnixTime now);
 
   static td::Result<std::unique_ptr<block::Transaction>>
                         impl_create_ordinary_transaction(Ref<vm::Cell> msg_root,

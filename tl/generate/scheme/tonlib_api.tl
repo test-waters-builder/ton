@@ -119,6 +119,7 @@ dns.entryDataText text:string = dns.EntryData;
 dns.entryDataNextResolver resolver:AccountAddress = dns.EntryData;
 dns.entryDataSmcAddress smc_address:AccountAddress = dns.EntryData;
 dns.entryDataAdnlAddress adnl_address:AdnlAddress = dns.EntryData;
+dns.entryDataStorageAddress bag_id:int256 = dns.EntryData;
 
 dns.entry name:string category:int256 entry:dns.EntryData = dns.Entry;
 
@@ -217,6 +218,12 @@ blocks.transactions id:ton.blockIdExt req_count:int32 incomplete:Bool transactio
 blocks.header id:ton.blockIdExt global_id:int32 version:int32 flags:# after_merge:Bool after_split:Bool before_split:Bool want_merge:Bool want_split:Bool validator_list_hash_short:int32 catchain_seqno:int32 min_ref_mc_seqno:int32 is_key_block:Bool prev_key_block_seqno:int32 start_lt:int64 end_lt:int64 gen_utime:int53 vert_seqno:# prev_blocks:vector<ton.blockIdExt> = blocks.Header;
 //blocks.shortData header:blocks.Header transactions:blocks.Header = blocks.BlockData;
 
+blocks.signature node_id_short:int256 signature:bytes = blocks.Signature;
+blocks.blockSignatures id:ton.blockIdExt signatures:(vector blocks.signature) = blocks.BlockSignatures;
+blocks.shardBlockLink id:ton.blockIdExt proof:bytes = blocks.ShardBlockLink;
+blocks.blockLinkBack to_key_block:Bool from:ton.blockIdExt to:ton.blockIdExt dest_proof:bytes proof:bytes state_proof:bytes = blocks.BlockLinkBack;
+blocks.shardBlockProof from:ton.blockIdExt mc_id:ton.blockIdExt links:(vector blocks.shardBlockLink) mc_proof:(vector blocks.blockLinkBack) = blocks.ShardBlockProof;
+
 configInfo config:tvm.cell = ConfigInfo;
 
 ---functions---
@@ -251,6 +258,7 @@ getBip39Hints prefix:string = Bip39Hints;
 //raw.init initial_account_state:raw.initialAccountState = Ok;
 raw.getAccountState account_address:accountAddress = raw.FullAccountState;
 raw.getTransactions private_key:InputKey account_address:accountAddress from_transaction_id:internal.transactionId = raw.Transactions;
+raw.getTransactionsV2 private_key:InputKey account_address:accountAddress from_transaction_id:internal.transactionId count:# try_decode_messages:Bool = raw.Transactions;
 raw.sendMessage body:bytes = Ok;
 raw.sendMessageReturnHash body:bytes = raw.ExtMessageInfo;
 raw.createAndSendMessage destination:accountAddress initial_account_state:bytes data:bytes = Ok;
@@ -284,7 +292,7 @@ query.estimateFees id:int53 ignore_chksig:Bool = query.Fees;
 query.getInfo id:int53 = query.Info;
 
 smc.load account_address:accountAddress = smc.Info;
-//smc.forget id:int53 = Ok;
+smc.forget id:int53 = Ok;
 smc.getCode id:int53 = tvm.Cell;
 smc.getData id:int53 = tvm.Cell;
 smc.getState id:int53 = tvm.Cell;
@@ -306,6 +314,8 @@ blocks.getShards id:ton.blockIdExt = blocks.Shards;
 blocks.lookupBlock mode:int32 id:ton.blockId lt:int64 utime:int32 = ton.BlockIdExt;
 blocks.getTransactions id:ton.blockIdExt mode:# count:# after:blocks.accountTransactionId = blocks.Transactions;
 blocks.getBlockHeader id:ton.blockIdExt = blocks.Header;
+blocks.getMasterchainBlockSignatures seqno:int32 = blocks.BlockSignatures;
+blocks.getShardBlockProof id:ton.blockIdExt mode:# from:mode.0?ton.blockIdExt = blocks.ShardBlockProof;
 
 onLiteServerQueryResult id:int64 bytes:bytes = Ok;
 onLiteServerQueryError id:int64 error:error = Ok;
